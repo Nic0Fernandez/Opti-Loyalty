@@ -21,8 +21,9 @@ from account import views as accountviews
 
 urlpatterns = [
     path('admin/', admin.site.urls),
+    path('home/', include('home.urls')),
     path("register/", registerviews.register, name="register"), 
-    path('', include("django.contrib.auth.urls")),
+    path('', include("django.contrib.auth.urls")), 
     path('moncompte/',accountviews.account, name="account") 
     # path('', include("main.urls")),
 ]
