@@ -4,8 +4,10 @@ from django.contrib.auth.models import User
 
 
 class RegisterForm(UserCreationForm):
-    phone = forms.CharField(label="Téléphone",max_length=10,required=True)
+    first_name=forms.CharField(required=True, max_length=15)
+    last_name=forms.CharField(required=True, max_length=15)
+    email=forms.EmailField(required=True)
 
     class Meta:
         model = User
-        fields = ["phone", "password1", "password2"]
+        fields = ["first_name","last_name","email", "password1", "password2"]
