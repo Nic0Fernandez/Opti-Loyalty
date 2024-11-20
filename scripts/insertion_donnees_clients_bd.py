@@ -4,7 +4,7 @@ import sqlite3
 
 
 def load_pizza_data():
-    df = pd.read_csv('realistic_synthetic_consumer_data_with_sizes_and_ingredients.csv')
+    df = pd.read_csv('data/consumer_data.csv')
 
     required_columns = ['client_id','pizza_id','order_date']
     if not all(col in df.columns for col in required_columns):
@@ -14,6 +14,7 @@ def load_pizza_data():
 
 def create_menu_table(conn):
     cursor = conn.cursor()
+    cursor.execute('DROP TABLE IF EXISTS orders')
     cursor.execute('''
         CREATE TABLE IF NOT EXISTS orders (
             order_id INTEGER PRIMARY KEY AUTOINCREMENT,
