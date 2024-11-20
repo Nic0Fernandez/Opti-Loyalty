@@ -14,7 +14,7 @@ def load_pizza_data():
 
 def create_menu_table(conn):
     cursor = conn.cursor()
-    cursor.execute("DROP TABLE IF EXISTS orders")
+    cursor.execute('DROP TABLE IF EXISTS orders')
     cursor.execute('''
         CREATE TABLE IF NOT EXISTS orders (
             order_id INTEGER PRIMARY KEY AUTOINCREMENT,
