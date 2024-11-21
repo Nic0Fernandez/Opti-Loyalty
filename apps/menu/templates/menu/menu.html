@@ -1,0 +1,19 @@
+{% extends "main/base.html" %}
+
+{% block title %}Menu{% endblock %}
+
+{% block content %}
+    
+    <h3>Menu</h3>
+
+    <div class="pizzas">
+        {% for pizza in pizzas %}
+            <div class="pizza-card">
+                <h4>{{ pizza.name }}</h4>
+                <img src="{{ MEDIA_URL }}{{ pizza.image }}" alt="{{ pizza.name }}" class="pizza-image">
+
+                <p>{{ pizza.ingredients }}</p>
+            </div>
+        {% endfor %}
+    </div>
+{% endblock %}
