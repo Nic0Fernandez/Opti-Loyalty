@@ -13,7 +13,7 @@ def load_pizza_data():
 def create_menu_table(conn):
     cursor = conn.cursor()
     cursor.execute('''
-        CREATE TABLE IF NOT EXISTS menu (
+        CREATE TABLE IF NOT EXISTS main_pizza (
             pizza_id TEXT PRIMARY KEY,
             unit_price REAL NOT NULL,
             name TEXT NOT NULL,

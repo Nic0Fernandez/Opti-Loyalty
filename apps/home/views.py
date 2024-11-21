@@ -9,6 +9,10 @@ import sqlite3
 import sys
 import os
 
+from home.top_pizzas import top_5_pizzas
+
+
+
 # Chemin vers la base de données
 db_path = settings.DATABASES['default']['NAME']
 
@@ -25,6 +29,8 @@ def home(request):
         cache.set(cache_key, recommendations, timeout=60 * 60 * 24)
 
     context = {
+        'pizzas': top_5_pizzas(db_path),
+        'MEDIA_URL': settings.MEDIA_URL,
         "recommendations": recommendations,
     }
     return render(request, 'home/home.html', context)

@@ -1,0 +1,26 @@
+.pizzas {
+    display: flex;
+    flex-wrap: wrap;  /* Permet de faire passer les cartes à la ligne si nécessaire */
+    gap: 20px;  /* Espace entre les cartes */
+    justify-content: space-around;  /* Répartir les éléments avec un peu d'espace autour */
+}
+
+.pizza-card {
+    background-color: #f8f9fa;  /* Couleur de fond claire */
+    border: 1px solid #ddd;  /* Bordure grise */
+    border-radius: 8px;  /* Coins arrondis */
+    padding: 20px;
+    width: 250px;  /* Largeur fixe pour les cartes */
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);  /* Ombre légère */
+    text-align: center;  /* Centrer le texte */
+}
+
+.pizza-card h4 {
+    font-size: 1.2em;
+    margin-bottom: 10px;
+}
+
+.pizza-card p {
+    font-size: 1em;
+    margin-bottom: 8px;
+}

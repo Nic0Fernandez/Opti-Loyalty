@@ -22,36 +22,24 @@ class CustomUser(AbstractBaseUser, PermissionsMixin):
     email = models.EmailField(unique=True, max_length=255, verbose_name="Email")
     first_name = models.CharField(max_length=30, verbose_name="Prénom")
     last_name = models.CharField(max_length=30, verbose_name="Nom")
-    points = models.PositiveIntegerField(default=0, verbose_name="Points de fidélité")
 
     objects = CustomUserManager()
 
     USERNAME_FIELD = 'email'
     REQUIRED_FIELDS = ['first_name', 'last_name']
 
-    @property
-    def current_card(self):
-        if self.points < 250:
-            return "bronze"
-        elif self.points < 750:
-            return "argent"
-        else:
-            return "gold"
 
     def __str__(self):
         return self.email
 
-class Coupon(models.Model):
-    user = models.ForeignKey(CustomUser, on_delete=models.CASCADE, related_name='coupons')
-    reduced_price = models.DecimalField(max_digits=10, decimal_places=2, verbose_name="Prix réduit")
-    product = models.CharField(max_length=255, verbose_name="Produit applicable")
-    qr_code = models.UUIDField(default=uuid.uuid4, editable=False, unique=True, verbose_name="QR Code Unique")
-    created_at = models.DateTimeField(auto_now_add=True, verbose_name="Date de création")
-    is_redeemed = models.BooleanField(default=False, verbose_name="Utilisé")
+class Pizza(models.Model):
+    pizza_id=models.TextField(primary_key=True, default=uuid.uuid4, editable=False)
+    unit_price = models.DecimalField(max_digits=5, decimal_places=2)
+    name = models.CharField(max_length=100)
+    ingredients = models.TextField()
+    category=models.TextField()
+    size=models.TextField()
+    image = models.ImageField(upload_to='media/pizza/')  
 
     def __str__(self):
-        return f"Coupon {self.id} pour {self.product} - {self.reduced_price}€"
-
-    class Meta:
-        verbose_name = "Coupon"
-        verbose_name_plural = "Coupons"
+        return self.name
