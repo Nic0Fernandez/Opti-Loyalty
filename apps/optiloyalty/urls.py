@@ -21,8 +21,9 @@ from account import views as accountviews
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('', include('register.urls')),  # Inclure les URLs de l'application "register"
-    path('', include('django.contrib.auth.urls')),  # Inclure les URLs de l'application "register"
-    path('', include('account.urls')),     # Inclure les URLs de l'application "account"
-    path('', include('home.urls')),          # Inclure les URLs de l'application "home"
+    path('', include('register.urls')),  
+    path('', include('django.contrib.auth.urls')),  
+    path('', include('account.urls')),   
+    path('', include('home.urls')),         
+    path('', include('main.urls')),
 ]
