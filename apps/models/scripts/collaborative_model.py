@@ -16,14 +16,14 @@ conn = sqlite3.connect(db_path)
 
 query = """
 SELECT 
-    orders.client_id,
+    main_order.client_id,
     main_pizza.name AS pizza_name
 FROM 
-    orders
+    main_order
 JOIN 
     main_pizza
 ON 
-    orders.pizza_id = main_pizza.pizza_id
+    main_order.pizza_id = main_pizza.pizza_id
 """
 data = pd.read_sql_query(query, conn)
 

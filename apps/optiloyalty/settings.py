@@ -45,6 +45,8 @@ INSTALLED_APPS = [
     'register.apps.RegisterConfig', 
     'home.apps.HomeConfig',
     'account.apps.AccountConfig',
+    'menu.apps.MenuConfig',
+    'histo.apps.HistoConfig'
 ]
 
 MIDDLEWARE = [

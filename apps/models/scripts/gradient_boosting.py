@@ -17,7 +17,7 @@ def get_boosting_recommendations(client_id, db_path):
 
     # Chargement des données
     menu = pd.read_sql_query("SELECT * FROM main_pizza", conn)
-    orders = pd.read_sql_query("SELECT * FROM orders", conn)
+    orders = pd.read_sql_query("SELECT * FROM main_order", conn)
 
     # Fermer la connexion
     conn.close()

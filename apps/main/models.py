@@ -33,13 +33,23 @@ class CustomUser(AbstractBaseUser, PermissionsMixin):
         return self.email
 
 class Pizza(models.Model):
-    pizza_id=models.TextField(primary_key=True, default=uuid.uuid4, editable=False)
+    pizza_id=models.TextField(primary_key=True,  editable=False)
     unit_price = models.DecimalField(max_digits=5, decimal_places=2)
     name = models.CharField(max_length=100)
     ingredients = models.TextField()
     category=models.TextField()
     size=models.TextField()
     image = models.ImageField(upload_to='media/pizza/')  
+
+    def __str__(self):
+        return self.name
+    
+    
+class Order(models.Model):
+    order_id=models.IntegerField(primary_key=True, editable=False)
+    client_id= models.IntegerField()
+    pizza_id = models.CharField(max_length=100)
+    order_date=models.DateField()
 
     def __str__(self):
         return self.name

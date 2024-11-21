@@ -17,8 +17,8 @@ def get_forest_recommendations(client_id, db_path):
     conn = sqlite3.connect(db_path)
 
     # Chargement des données
-    menu = pd.read_sql_query("SELECT pizza_id, name FROM main_pizza", conn)
-    orders = pd.read_sql_query("SELECT client_id, pizza_id FROM orders", conn)
+    menu = pd.read_sql_query("SELECT * FROM main_pizza", conn)
+    orders = pd.read_sql_query("SELECT * FROM main_order", conn)
 
     # Fermer la connexion
     conn.close()

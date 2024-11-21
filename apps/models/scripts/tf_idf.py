@@ -20,7 +20,7 @@ def get_tfidf_recommendations(client_id, db_path, num_recommendations=10):
     # Charger les commandes de l'utilisateur
     query_user_orders = f"""
     SELECT pizza_id
-    FROM orders
+    FROM main_order
     WHERE client_id = {client_id};
     """
     user_orders_df = pd.read_sql_query(query_user_orders, conn)
