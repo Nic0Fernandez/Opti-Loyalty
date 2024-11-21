@@ -12,13 +12,13 @@ conn = sqlite3.connect(db_path)
 
 query_pizzas = """
 SELECT pizza_id, name, size, ingredients
-FROM menu;
+FROM main_pizza;
 """
 pizzas_df = pd.read_sql_query(query_pizzas, conn)
 
 query_orders = """
 SELECT client_id, pizza_id, order_date
-FROM orders;
+FROM main_order;
 """
 orders_df = pd.read_sql_query(query_orders, conn)
 

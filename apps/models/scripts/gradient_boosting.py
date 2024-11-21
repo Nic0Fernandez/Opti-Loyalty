@@ -14,8 +14,8 @@ db_path = os.path.join(current_dir, '../../../db.sqlite3')
 conn = sqlite3.connect(db_path)
 
 # Chargement des données
-menu = pd.read_sql_query("SELECT * FROM menu", conn)
-orders = pd.read_sql_query("SELECT * FROM orders", conn)
+menu = pd.read_sql_query("SELECT * FROM main_pizza", conn)
+orders = pd.read_sql_query("SELECT * FROM main_order", conn)
 
 # Fermer la connexion
 conn.close()

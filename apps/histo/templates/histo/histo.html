@@ -1,0 +1,30 @@
+{% extends "main/base.html" %}
+
+{% block title %}Historique{% endblock %}
+
+{% block content %}
+    
+    <h3>Vos commandes passées</h3>
+
+    <table class="order-table">
+        <thead>
+            <tr>
+                <th>Nom de la pizza</th>
+                <th>Ingrédients</th>
+                <th>Date</th>
+                <th>Heure</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for order in orders %}
+                <tr>
+                    <td>{{ order.name }}</td>
+                    <td>{{ order.ingredients}}</td>
+                    <td>{{ order.formatted_date }}</td>
+                    <td>{{ order.formatted_time }}</td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
+{% endblock %}

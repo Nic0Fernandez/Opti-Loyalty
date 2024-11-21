@@ -15,13 +15,13 @@ def load_data():
 
     query_pizzas = """
     SELECT pizza_id, name, size, ingredients
-    FROM menu;
+    FROM main_pizza;
     """
     pizzas_df = pd.read_sql_query(query_pizzas, conn)
 
     query_orders = """
     SELECT client_id, pizza_id, order_date
-    FROM orders;
+    FROM main_order;
     """
     orders_df = pd.read_sql_query(query_orders, conn)
     orders_df['order_date'] = pd.to_datetime(orders_df['order_date'])
