@@ -15,6 +15,8 @@ from pathlib import Path
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent.parent   #changer niveau de parent en fonction de la DB
 
+MEDIA_ROOT = BASE_DIR / 'media'  # Le répertoire physique où les fichiers seront stockés sur le serveur
+
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/5.1/howto/deployment/checklist/
@@ -134,6 +136,8 @@ LOGIN_URL = 'login'
 
 # Optionnel : Définir la redirection par défaut après la déconnexion
 LOGOUT_REDIRECT_URL = 'login'
+
+MEDIA_URL = 'media/'  # L'URL de base pour accéder aux fichiers média dans l'application
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/5.1/ref/settings/#default-auto-field

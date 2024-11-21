@@ -2,13 +2,14 @@ import django
 from django.conf import settings
 from django.shortcuts import render
 from django.contrib.auth.decorators import login_required
-from main.models import Coupon
 
 from watchdog.observers import Observer
 from watchdog.events import FileSystemEventHandler
 import time
 import os
 import threading
+
+from home.top_pizzas import top_5_pizzas
 
 # Configurer Django pour accéder aux paramètres
 os.environ.setdefault("DJANGO_SETTINGS_MODULE", "optiloyalty.settings")  
@@ -21,11 +22,9 @@ db_path = settings.DATABASES['default']['NAME']
 
 def home(request):
     user = request.user
-    coupons = user.coupons.all()  # Récupérer tous les coupons de l'utilisateur
     context = {
-        'loyalty_status': user.current_card,
-        'points': user.points,
-        'coupons': coupons,
+        'pizzas': top_5_pizzas(db_path),
+        'MEDIA_URL': settings.MEDIA_URL
     }
 
     # Lancer l'observateur dans un thread séparé (en arrière-plan)
@@ -60,4 +59,3 @@ def start_observer():
     observer.join()
 
 
-    
