@@ -9,7 +9,7 @@ import sqlite3
 import sys
 import os
 
-from home.top_pizzas import top_5_pizzas
+from home.top_pizzas import best_sold,get_info_pizza
 
 from models.scripts.gradient_boosting import get_boosting_recommendations
 from models.scripts.random_forest import get_forest_recommendations
@@ -34,9 +34,9 @@ def home(request):
         cache.set(cache_key, recommendations, timeout=60 * 60 * 24)
 
     context = {
-        'pizzas': top_5_pizzas(db_path),
+        'best_sold_pizzas': best_sold(db_path),
         'MEDIA_URL': settings.MEDIA_URL,
-        "recommendations": recommendations,
+        "recommendations": get_info_pizza(db_path,recommendations),
     }
     return render(request, 'home/home.html', context)
 
@@ -59,9 +59,9 @@ def execute_script(client_id):
 
     try:
         # Charger les modèles
-        COLLABORATIVE_MODEL_PATH = os.path.join(BASE_DIR, "models", "collaborative_model.joblib")
+        #COLLABORATIVE_MODEL_PATH = os.path.join(BASE_DIR, "models", "collaborative_model.joblib")
 
-        collaborative_model = load_model(COLLABORATIVE_MODEL_PATH)
+        #collaborative_model = load_model(COLLABORATIVE_MODEL_PATH)
 
         print("Tous les modèles ont été chargés avec succès.")
 
@@ -73,8 +73,8 @@ def execute_script(client_id):
         ingredient_recommendations = recommend_based_on_ingredients(client_id)
         print("Recommandations basées sur les ingrédients générées.")
 
-        collaborative_recommendations = get_collaborative_recommendations(collaborative_model, user_history, client_id)
-        print("Recommandations collaboratives générées.")
+        #collaborative_recommendations = get_collaborative_recommendations(collaborative_model, user_history, client_id)
+        #print("Recommandations collaboratives générées.")
 
         boosting_recommendations = get_boosting_recommendations(client_id, db_path)
         print("Recommandations par Gradient Boosting générées.")
@@ -87,7 +87,7 @@ def execute_script(client_id):
 
         recommendations = {
             "ingredients": ingredient_recommendations,
-            "collaborative": [rec[0] for rec in collaborative_recommendations],
+            #"collaborative": [rec[0] for rec in collaborative_recommendations],
             "boosting": boosting_recommendations,
             "forest": forest_recommendations,
             "tfidf": tfidf_recommendations,

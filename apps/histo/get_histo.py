@@ -3,11 +3,12 @@ import pandas as pd
 from datetime import datetime
 
 query = """
-    SELECT name, ingredients, order_date 
+    SELECT name, ingredients, size,unit_price, order_date 
     FROM main_order
     JOIN main_pizza
     ON main_order.pizza_id=main_pizza.pizza_id
     WHERE client_id= ?
+    ORDER BY order_date DESC
 """
 
 def get_histo(db_path, client_id):

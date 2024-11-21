@@ -11,6 +11,8 @@
             <tr>
                 <th>Nom de la pizza</th>
                 <th>Ingrédients</th>
+                <th>Taille</th>
+                <th>Prix</th>
                 <th>Date</th>
                 <th>Heure</th>
             </tr>
@@ -20,6 +22,8 @@
                 <tr>
                     <td>{{ order.name }}</td>
                     <td>{{ order.ingredients}}</td>
+                    <td>{{ order.size }}</td>
+                    <td>{{ order.unit_price }}</td>
                     <td>{{ order.formatted_date }}</td>
                     <td>{{ order.formatted_time }}</td>
                 </tr>
