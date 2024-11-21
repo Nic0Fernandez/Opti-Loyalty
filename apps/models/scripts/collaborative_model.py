@@ -1,9 +1,10 @@
 import sqlite3
 import os
 import pandas as pd
+import surprise
 from surprise import Dataset, Reader, SVD
 from sklearn.model_selection import train_test_split
-import pickle
+import joblib
 
 import os
 
@@ -55,10 +56,9 @@ algo.fit(trainset)
 
 
 # Chemin pour sauvegarder le modèle
-collaborative_model_path = '../collaborative_model.pkl'
+collaborative_model_path = 'models/collaborative_model.joblib'
 
 # Sauvegarder le modèle
-with open(collaborative_model_path, 'wb') as f:
-    pickle.dump(algo, f)
+joblib.dump(algo, collaborative_model_path)
 
 print(f"Modèle sauvegardé dans {collaborative_model_path}")

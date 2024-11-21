@@ -45,13 +45,13 @@ model = RandomForestClassifier(n_estimators=100, random_state=42)
 model.fit(X_train, y_train)
 
 
-import pickle
+import joblib
 
 # Chemin pour sauvegarder le modèle
-random_forest_model_path = "../random_forest_model.pkl"
+random_forest_model_path = "models/random_forest_model.joblib"
 
 # Sauvegarder le modèle
-with open(random_forest_model_path, 'wb') as f:
-    pickle.dump(model, f)
+joblib.dump(model, random_forest_model_path)
+
 
 print(f"Modèle sauvegardé dans {random_forest_model_path}")

@@ -42,17 +42,17 @@ pizza_name_mapping = dict(enumerate(target.astype('category').cat.categories))  
 X_train, X_test, y_train, y_test = train_test_split(features_encoded, target_encoded, test_size=0.2, random_state=42)
 
 # Entraînement du modèle Gradient Boosting
-model = GradientBoostingClassifier(n_estimators=100, learning_rate=0.1, random_state=42)
+model = GradientBoostingClassifier(n_estimators=40, learning_rate=0.2, random_state=42, max_depth=3, subsample=0.8)
 model.fit(X_train, y_train)
 
 
-import pickle
+import joblib
 
 # Chemin pour sauvegarder le modèle
-gradient_boosting_model_path = "../gradient_boosting_model.pkl"
+gradient_boosting_model_path = "models/gradient_boosting_model.joblib"
 
 # Sauvegarder le modèle
-with open(gradient_boosting_model_path, 'wb') as f:
-    pickle.dump(model, f)
+joblib.dump(model, gradient_boosting_model_path)
+
 
 print(f"Modèle sauvegardé dans {gradient_boosting_model_path}")

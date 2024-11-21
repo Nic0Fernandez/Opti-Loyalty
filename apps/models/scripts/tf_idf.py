@@ -31,16 +31,12 @@ tfidf_matrix = tfidf_vectorizer.fit_transform(pizzas_df['ingredients'])
 
 cosine_sim = cosine_similarity(tfidf_matrix, tfidf_matrix)
 
-import pickle
+import joblib
 
 # Chemins pour sauvegarder les objets
-tfidf_path = "tfidf_vectorizer.pkl"
-cosine_sim_path = "cosine_similarity.pkl"
+tfidf_path = "models/tfidf_vectorizer.joblib"
+cosine_sim_path = "models/cosine_similarity.joblib"
 
 # Sauvegarder TfidfVectorizer
-with open(tfidf_path, 'wb') as f:
-    pickle.dump(tfidf_vectorizer, f)
+joblib.dump(tfidf_matrix, cosine_sim_path)
 
-# Sauvegarder la matrice de similarité
-with open(cosine_sim_path, 'wb') as f:
-    pickle.dump(cosine_sim, f)

@@ -1,10 +1,7 @@
 import subprocess
 import os
 
-# Obtenez le chemin absolu du répertoire contenant train_models.py
 current_dir = os.path.dirname(os.path.abspath(__file__))
-
-# Chemin du répertoire contenant les autres scripts
 scripts_dir = os.path.join(current_dir)
 
 # Liste des scripts à exécuter
@@ -12,11 +9,10 @@ scripts_to_run = [
     "collaborative_model.py",
     "gradient_boosting.py",
     "random_forest.py",
-    "recommandation_ingredient.py",
+    #"recommandation_ingredient.py",
     "tf_idf.py"
 ]
 
-# Fonction pour exécuter un script Python
 def run_script(script_name):
     script_path = os.path.join(scripts_dir, script_name)
     if os.path.exists(script_path):
@@ -29,7 +25,9 @@ def run_script(script_name):
     else:
         print(f"Script {script_name} introuvable dans {scripts_dir}.\n")
 
-# Exécuter tous les scripts
+
+print("TRAIN MODELLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLS")
+
 if __name__ == "__main__":
     for script in scripts_to_run:
         run_script(script)
