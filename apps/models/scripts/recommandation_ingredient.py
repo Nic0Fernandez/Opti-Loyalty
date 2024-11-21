@@ -15,7 +15,7 @@ def load_data():
 
     query_pizzas = """
     SELECT pizza_id, name, size, ingredients
-    FROM menu;
+    FROM main_pizza;
     """
     pizzas_df = pd.read_sql_query(query_pizzas, conn)
 
@@ -50,10 +50,20 @@ def recommend_pizzas_based_on_ingredients(client_pizzas, pizzas_df, top_k=1):
         similarity_score = common_ingredients / total_ingredients if total_ingredients > 0 else 0
         similarities.append((pizza['pizza_id'], similarity_score))
     
-    recommendations = sorted(similarities, key=lambda x: x[1], reverse=True)[:top_k]
-    recommended_pizzas = [pizza[0] for pizza in recommendations]
+    similarities.sort(key=lambda x: x[1], reverse=True)
+
+    recommendations = []
+    for i in range(len(similarities)):
+        recommanded_pizza_idx = similarities[i][0]
+        recommanded_pizza = pizzas_df.loc[pizzas_df['pizza_id'] == recommanded_pizza_idx].iloc[0]
+        
+        if recommanded_pizza["name"] not in recommendations:
+            recommendations.append(recommanded_pizza["name"])
+            
+        if len(recommendations) == top_k : 
+            break
     
-    return recommended_pizzas
+    return recommendations
 
 def precision_recall_at_k(recommended_pizzas, relevant_pizzas, k=1):
     recommended_set = set(recommended_pizzas[:k])

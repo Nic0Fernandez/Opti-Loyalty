@@ -4,12 +4,17 @@ from django.conf import settings
 from django.contrib.auth.decorators import login_required
 import subprocess
 import pandas as pd
-import joblib  # Utiliser joblib au lieu de pickle
+import joblib 
 import sqlite3
 import sys
 import os
 
 from home.top_pizzas import top_5_pizzas
+
+from models.scripts.gradient_boosting import get_boosting_recommendations
+from models.scripts.random_forest import get_forest_recommendations
+from models.scripts.tf_idf import get_tfidf_recommendations
+
 
 
 
@@ -55,15 +60,8 @@ def execute_script(client_id):
     try:
         # Charger les modèles
         COLLABORATIVE_MODEL_PATH = os.path.join(BASE_DIR, "models", "collaborative_model.joblib")
-        GRADIENT_BOOSTING_MODEL_PATH = os.path.join(BASE_DIR, "models", "gradient_boosting_model.joblib")
-        RANDOM_FOREST_MODEL_PATH = os.path.join(BASE_DIR, "models", "random_forest_model.joblib")
-        TFIDF_SIMILARITY_PATH = os.path.join(BASE_DIR, "models", "cosine_similarity.joblib")
-        TFIDF_VECTORIZER_PATH = os.path.join(BASE_DIR, "models", "tfidf_vectorizer.joblib")
 
         collaborative_model = load_model(COLLABORATIVE_MODEL_PATH)
-        gradient_boosting_model = load_model(GRADIENT_BOOSTING_MODEL_PATH)
-        random_forest_model = load_model(RANDOM_FOREST_MODEL_PATH)
-        cosine_sim = load_model(TFIDF_SIMILARITY_PATH)
 
         print("Tous les modèles ont été chargés avec succès.")
 
@@ -75,34 +73,41 @@ def execute_script(client_id):
         ingredient_recommendations = recommend_based_on_ingredients(client_id)
         print("Recommandations basées sur les ingrédients générées.")
 
-        collaborative_recommendations = get_collaborative_recommendations(collaborative_model, user_history)
+        collaborative_recommendations = get_collaborative_recommendations(collaborative_model, user_history, client_id)
         print("Recommandations collaboratives générées.")
 
-        boosting_recommendations = get_boosting_recommendations(gradient_boosting_model, user_history)
+        boosting_recommendations = get_boosting_recommendations(client_id, db_path)
         print("Recommandations par Gradient Boosting générées.")
 
-        forest_recommendations = get_forest_recommendations(random_forest_model, user_history)
+        forest_recommendations = get_forest_recommendations(client_id, db_path)  
         print("Recommandations par Random Forest générées.")
 
-        tfidf_recommendations = get_tfidf_recommendations(client_id, user_history, cosine_sim)
+        tfidf_recommendations = get_tfidf_recommendations(client_id, db_path)
         print("Recommandations TF-IDF générées.")
 
         recommendations = {
             "ingredients": ingredient_recommendations,
-            "collaborative": collaborative_recommendations,
+            "collaborative": [rec[0] for rec in collaborative_recommendations],
             "boosting": boosting_recommendations,
             "forest": forest_recommendations,
             "tfidf": tfidf_recommendations,
         }
 
-        print("Recommandations générées :", recommendations)
-        return recommendations
+        print(recommendations)
+
+        top_5_recommandations = aggregate_recommendations(recommendations)
+        print("Top 5 des pizzas recommandées :", top_5_recommandations)
+
+        return top_5_recommandations
+
 
     except Exception as e:
         print(f"Une erreur s'est produite : {e}")
         import traceback
         traceback.print_exc()
         return {}
+
+
 
 def load_model(path):
     """Charger un modèle depuis un fichier joblib."""
@@ -117,13 +122,16 @@ def load_model(path):
         print(f"Erreur lors du chargement du modèle {path} : {e}")
         return None
 
+
 def get_user_history(client_id):
     """Récupérer l'historique des commandes d'un client."""
     conn = sqlite3.connect(db_path)
     query = f"""
-    SELECT pizza_id
+    SELECT orders.pizza_id, main_pizza.name
     FROM orders
-    WHERE client_id = {client_id};
+    JOIN main_pizza
+    ON orders.pizza_id = main_pizza.pizza_id
+    WHERE client_id = {client_id}
     """
     user_data = pd.read_sql_query(query, conn)
     conn.close()
@@ -137,60 +145,42 @@ def recommend_based_on_ingredients(client_id):
     pizzas_df, orders_df = load_data()
     user_pizzas = get_user_history(client_id)['pizza_id'].tolist()
     recommendations = recommend_pizzas_based_on_ingredients(user_pizzas, pizzas_df, top_k=10)
+    print(recommendations)
     return recommendations
 
 
-def get_collaborative_recommendations(model, user_history):
+def get_collaborative_recommendations(model, user_history, client_id):
     """Recommandations via le modèle collaboratif."""
     recommendations = []
-    for pizza in user_history['pizza_id']:
-        score = model.predict(user_history['client_id'], pizza).est
-        recommendations.append((pizza, score))
-    return sorted(recommendations, key=lambda x: x[1], reverse=True)[:10]
+    for _, row in user_history.iterrows():
+        pizza_name = row['name']  # Extraire l'ID de la pizza
+        score = model.predict(client_id, pizza_name).est  # Prédire la note pour cette pizza
+        recommendations.append((pizza_name, score))
+    
+    # Trier les recommandations par score décroissant
+    recommendations = sorted(recommendations, key=lambda x: x[1], reverse=True)
+    print(recommendations)
+    # Retourner les 10 meilleures recommandations
+    return recommendations[:10]
 
 
-def get_boosting_recommendations(model, user_history):
-    """Recommandations via Gradient Boosting."""
-    features = prepare_features_for_model(user_history)
-    predictions = model.predict_proba(features)
-    return extract_top_predictions(predictions)
+def aggregate_recommendations(recommendations):
+    scores = {}
+    
+    for model_name, recs in recommendations.items():
+        if isinstance(recs, list):
+            for idx, pizza in enumerate(recs):
+                points = 10 - idx  
+                if points < 1:  
+                    break
+                if pizza in scores:
+                    scores[pizza] += points
+                else:
+                    scores[pizza] = points
+        else:
+            print("Problème format")
 
-
-def get_forest_recommendations(model, user_history):
-    """Recommandations via Random Forest."""
-    features = prepare_features_for_model(user_history)
-    predictions = model.predict_proba(features)
-    return extract_top_predictions(predictions)
-
-
-def get_tfidf_recommendations(client_id, user_history, cosine_sim, num_recommendations=10):
-    conn = sqlite3.connect(db_path)
-    pizzas_df = pd.read_sql_query("SELECT pizza_id, name, ingredients FROM menu", conn)
-    conn.close()
-
-    ordered_pizza_ids = user_history['pizza_id'].unique()
-    pizza_indices = pizzas_df[pizzas_df['pizza_id'].isin(ordered_pizza_ids)].index
-
-    similar_scores = cosine_sim[pizza_indices].mean(axis=0)
-
-    pizza_scores = list(enumerate(similar_scores))
-    pizza_scores = [
-        (i, score) for i, score in pizza_scores if pizzas_df.iloc[i]['pizza_id'] not in ordered_pizza_ids
-    ]
-    pizza_scores = sorted(pizza_scores, key=lambda x: x[1], reverse=True)
-
-    recommended_pizzas = []
-    for i, score in pizza_scores[:num_recommendations]:
-        pizza = pizzas_df.iloc[i]
-        recommended_pizzas.append((pizza['name'], pizza['pizza_id'], score))
-
-    return recommended_pizzas
-
-
-def prepare_features_for_model(user_history):
-    return user_history
-
-
-def extract_top_predictions(predictions):
-    scores = sorted(enumerate(predictions), key=lambda x: x[1], reverse=True)
-    return scores[:10]
+    sorted_pizzas = sorted(scores.items(), key=lambda x: x[1], reverse=True)
+    
+    top_5_pizzas = [pizza for pizza, score in sorted_pizzas[:5]]
+    return top_5_pizzas

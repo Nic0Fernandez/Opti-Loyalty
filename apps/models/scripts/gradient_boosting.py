@@ -1,58 +1,78 @@
+# gradient_boosting.py
+
 import sqlite3
 import pandas as pd
 from sklearn.model_selection import train_test_split
 from sklearn.ensemble import GradientBoostingClassifier
-from sklearn.metrics import classification_report, accuracy_score, confusion_matrix
 import warnings
 warnings.filterwarnings("ignore")
-
 import os
 
-# Chemin absolu vers la base de données
-current_dir = os.path.dirname(os.path.abspath(__file__))  
-db_path = os.path.join(current_dir, '../../../db.sqlite3') 
-conn = sqlite3.connect(db_path)
+def get_boosting_recommendations(client_id, db_path):
+    """
+    Entraîne le modèle Gradient Boosting et retourne les recommandations pour un client donné.
+    """
+    # Chemin absolu vers la base de données
+    conn = sqlite3.connect(db_path)
 
-# Chargement des données
-menu = pd.read_sql_query("SELECT * FROM menu", conn)
-orders = pd.read_sql_query("SELECT * FROM orders", conn)
+    # Chargement des données
+    menu = pd.read_sql_query("SELECT * FROM main_pizza", conn)
+    orders = pd.read_sql_query("SELECT * FROM orders", conn)
 
-# Fermer la connexion
-conn.close()
+    # Fermer la connexion
+    conn.close()
 
-# Jointure pour obtenir les noms des pizzas
-order_data = orders.merge(menu, on='pizza_id')
+    # Jointure pour obtenir les noms des pizzas
+    order_data = orders.merge(menu, on='pizza_id')
 
-# Remplacer pizza_id par name
-order_data_grouped = order_data.groupby(['client_id', 'name'])['name'].count().unstack(fill_value=0)
+    # Remplacer pizza_id par name
+    order_data_grouped = order_data.groupby(['client_id', 'name'])['name'].count().unstack(fill_value=0)
 
-# Création des labels pour recommandation
-# La pizza la plus commandée pour chaque client devient la cible
-order_data_grouped['most_ordered'] = order_data_grouped.idxmax(axis=1)
-target = order_data_grouped['most_ordered']
-features = order_data_grouped.drop(columns=['most_ordered'])
+    # Création des labels pour recommandation
+    # La pizza la plus commandée pour chaque client devient la cible
+    order_data_grouped['most_ordered'] = order_data_grouped.idxmax(axis=1)
+    target = order_data_grouped['most_ordered']
+    features = order_data_grouped.drop(columns=['most_ordered'])
 
-# Encodage des pizzas
-features_encoded = features  # Pas besoin d'encodage pour les noms dans ce cas
-target_encoded = target.astype('category').cat.codes
-pizza_name_mapping = dict(enumerate(target.astype('category').cat.categories))  # Pour décoder plus tard
+    # Séparation des données pour entraînement et test
+    X_train, X_test, y_train, y_test = train_test_split(features, target, test_size=0.2, random_state=42)
 
+    # Entraînement du modèle Gradient Boosting
+    model = GradientBoostingClassifier(n_estimators=40, learning_rate=0.2, random_state=42, max_depth=3, subsample=0.8)
+    model.fit(X_train, y_train)
 
-# Séparation des données pour entraînement et test
-X_train, X_test, y_train, y_test = train_test_split(features_encoded, target_encoded, test_size=0.2, random_state=42)
+    # Préparer les données pour le client donné
+    if client_id in features.index:
+        user_features = features.loc[[client_id]]
+    else:
+        # Si le client n'existe pas dans les données d'entraînement, retourner une recommandation par défaut
+        user_features = pd.DataFrame(0, index=[client_id], columns=features.columns)
 
-# Entraînement du modèle Gradient Boosting
-model = GradientBoostingClassifier(n_estimators=40, learning_rate=0.2, random_state=42, max_depth=3, subsample=0.8)
-model.fit(X_train, y_train)
+    # Prédire les probabilités pour toutes les classes (pizzas)
+    predictions_proba = model.predict_proba(user_features)[0]
+    pizza_names = model.classes_
 
+    # Créer une liste de tuples (pizza_name, probability)
+    pizza_probabilities = list(zip(pizza_names, predictions_proba))
 
-import joblib
+    # Trier par probabilité décroissante
+    pizza_probabilities.sort(key=lambda x: x[1], reverse=True)
 
-# Chemin pour sauvegarder le modèle
-gradient_boosting_model_path = "models/gradient_boosting_model.joblib"
+    # Retourner les 10 meilleures recommandations
+    top_recommendations = pizza_probabilities[:10]
 
-# Sauvegarder le modèle
-joblib.dump(model, gradient_boosting_model_path)
+    # Extraire uniquement les noms de pizzas
+    recommendations = [pizza for pizza, prob in top_recommendations]
 
+    print(recommendations)
+    return recommendations
 
-print(f"Modèle sauvegardé dans {gradient_boosting_model_path}")
+# Permettre d'exécuter le script directement pour tester
+if __name__ == "__main__":
+    # Chemin absolu vers la base de données
+    current_dir = os.path.dirname(os.path.abspath(__file__))  
+    db_path = os.path.join(current_dir, '../../../db.sqlite3') 
+
+    client_id = 1  # Exemple de client_id
+    recommendations = get_boosting_recommendations(client_id, db_path)
+    print(f"Recommandations pour le client {client_id} : {recommendations}")
