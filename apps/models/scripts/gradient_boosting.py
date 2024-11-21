@@ -66,13 +66,3 @@ def get_boosting_recommendations(client_id, db_path):
 
     print(recommendations)
     return recommendations
-
-# Permettre d'exécuter le script directement pour tester
-if __name__ == "__main__":
-    # Chemin absolu vers la base de données
-    current_dir = os.path.dirname(os.path.abspath(__file__))  
-    db_path = os.path.join(current_dir, '../../../db.sqlite3') 
-
-    client_id = 1  # Exemple de client_id
-    recommendations = get_boosting_recommendations(client_id, db_path)
-    print(f"Recommandations pour le client {client_id} : {recommendations}")

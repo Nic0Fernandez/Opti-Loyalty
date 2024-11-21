@@ -127,10 +127,10 @@ def get_user_history(client_id):
     """Récupérer l'historique des commandes d'un client."""
     conn = sqlite3.connect(db_path)
     query = f"""
-    SELECT orders.pizza_id, main_pizza.name
-    FROM orders
+    SELECT main_order.pizza_id, main_pizza.name
+    FROM main_order
     JOIN main_pizza
-    ON orders.pizza_id = main_pizza.pizza_id
+    ON main_order.pizza_id = main_pizza.pizza_id
     WHERE client_id = {client_id}
     """
     user_data = pd.read_sql_query(query, conn)

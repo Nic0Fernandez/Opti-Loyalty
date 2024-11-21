@@ -89,17 +89,9 @@ def evaluate_model():
         recommended_pizzas = recommend_pizzas_based_on_ingredients(client_pizzas, pizzas_df, top_k=1)
         recommended_pizzas_names = pizzas_df[pizzas_df['pizza_id'].isin(recommended_pizzas)]['name'].tolist()
         
-        print(f"Client {client_id} :")
-        print(f"Recommandations : {recommended_pizzas_names}")
-        print(f"Pizzas pertinentes : {relevant_pizzas}")
-        
         precision, recall = precision_recall_at_k(recommended_pizzas_names, relevant_pizzas, k=1)
         f1_score = 2 * (precision * recall) / (precision + recall) if (precision + recall) > 0 else 0
         
         precisions.append(precision)
         recalls.append(recall)
         f1_scores.append(f1_score)
-
-    print(f"Précision moyenne : {sum(precisions)/len(precisions):.2f}")
-    print(f"Rappel moyen : {sum(recalls)/len(recalls):.2f}")
-    print(f"F1-Score moyen : {sum(f1_scores)/len(f1_scores):.2f}")

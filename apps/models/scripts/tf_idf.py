@@ -78,4 +78,3 @@ if __name__ == "__main__":
 
     client_id = 1  # Exemple de client_id
     recommendations = get_tfidf_recommendations(client_id, db_path)
-    print(f"Recommandations pour le client {client_id} : {recommendations}")

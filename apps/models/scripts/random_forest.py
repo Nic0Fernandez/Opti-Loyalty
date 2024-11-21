@@ -67,11 +67,3 @@ def get_forest_recommendations(client_id, db_path):
 
     return recommendations
 
-
-# Test du script directement (si besoin)
-if __name__ == "__main__":
-    # Remplacer par le chemin de votre base de données
-    db_path = "path/to/db.sqlite3"
-    client_id = 1  # Exemple de client
-    recommendations = get_forest_recommendations(client_id, db_path)
-    print(f"Recommandations pour le client {client_id} : {recommendations}")

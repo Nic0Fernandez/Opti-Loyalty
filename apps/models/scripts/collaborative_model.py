@@ -60,5 +60,3 @@ collaborative_model_path = 'models/collaborative_model.joblib'
 
 # Sauvegarder le modèle
 joblib.dump(algo, collaborative_model_path)
-
-print(f"Modèle sauvegardé dans {collaborative_model_path}")
