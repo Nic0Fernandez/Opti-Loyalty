@@ -66,6 +66,12 @@ query_pizzas = """
 
 
 def pizzas_season(db_path):
+    """
+    Calcul d'un score de saisonnalité pour chaque pizza, 
+    2 points par ingrédient de saison, 1 point par ingrédient qui n'est pas un légume et 0 pour un ingrédient pas de saison
+    Pizzas sans légumes ne peuvent pas être de saison
+    
+    """
     conn = sqlite3.connect(db_path)
     df_pizzas = pd.read_sql_query(query_pizzas, conn)
     df_pizzas['score_seasonnality'] = 0.0
@@ -73,6 +79,8 @@ def pizzas_season(db_path):
         score_seasonnality=0
         ingredients = pizza['ingredients'].split(',')  
         ingredients = [ingredient.strip() for ingredient in ingredients]
+        
+        #Récupérer les légumes parmi les ingrédients
         cursor = conn.cursor() 
         like_conditions = [
             f"(LOWER(vegetable) LIKE '%' || LOWER(?) || '%' OR LOWER(?) LIKE '%' || LOWER(vegetable) || '%')"
@@ -88,15 +96,21 @@ def pizzas_season(db_path):
         params = [param for sublist in params for param in sublist]
         cursor.execute(query_at_least_one_vegetable, params)
         present_ingredients = {row[0] for row in cursor.fetchall()}
+        #Exclusion des pizzas sans légumes
         if len(present_ingredients)==0:
             continue
+        
+        #Calcul du score
         for ingredient in ingredients:
+            # Ingrédient pas légume
             if ingredient not in present_ingredients:
                 score_seasonnality+=1
             else:
                 today = datetime.now()
                 current_day = today.day
                 current_month = today.month
+                
+                #Requête pour vérifier la saisonnalité de l'ingrédient (correspondance des dates de consommation avec date du jour)
                 cursor = conn.cursor()
                 query_ingredients=f"""
                     SELECT COUNT(*)
@@ -118,7 +132,10 @@ def pizzas_season(db_path):
                     );
                 """
                 cursor.execute(query_ingredients)
+                #2 points si ingrédient de saison
                 score_seasonnality += 2*cursor.fetchone()[0] 
+                
+        #Normalisation du score
         normalized_score=score_seasonnality/len(df_pizzas['ingredients'])    
         df_pizzas.loc[df_pizzas['name'] == pizza['name'], 'score_seasonnality'] = normalized_score
 

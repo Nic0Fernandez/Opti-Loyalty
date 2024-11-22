@@ -19,6 +19,8 @@ def get_histo(db_path, client_id):
     conn.close()
     
     records=df.to_dict(orient='records')
+    
+    #Modification format date
     for record in records:
         order_date = record['order_date']
         
