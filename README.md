@@ -50,3 +50,5 @@ Puis
 Tous les scripts (et notebooks équivalents) utilisés pour entraîner les modèles et réaliser les tests ainsi que la génération des données clients sont disponibles dans les dossier "scripts" et "scripts/notebooks" depuis la racine du projet.
 
 Le dossier "media" contient les images utilisées. Le dossier apps contient toute la partie front-end et liaison avec le back-end. Chaque app correspond à une page. L'app "models" contient les scripts d'entrainement des modèles utilisés par le site.
+
+L'app "home" contient la plupart des traitements. Le fichier "top_pizzas.py" contient la plupart des requêtes sql nécessaires aux affichages présents sur la page d'accueil du site. 
