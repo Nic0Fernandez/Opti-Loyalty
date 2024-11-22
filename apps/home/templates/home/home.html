@@ -1,19 +1,72 @@
 {% extends "main/base.html" %}
+{% load static %}
 
 {% block title %}Accueil{% endblock %}
 
 {% block content %}
+    <style>
+        .pizzas, .recommendations {
+            display: flex;
+            overflow-x: auto; 
+            gap: 20px; 
+            padding-bottom: 10px; 
+
+            scrollbar-width: none;
+            -ms-overflow-style: none;
+        }
+
+        .pizzas::-webkit-scrollbar, .recommendations::-webkit-scrollbar {
+            display: none;
+        }
+
+        .pizza-card {
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-start;
+            flex: 0 0 auto; /* Empêche les cartes de rétrécir ou de s'étirer */
+            width: 250px; 
+            background-color: #f8f9fa; 
+            border: 1px solid #ddd; 
+            border-radius: 8px; 
+            padding: 20px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); /* Ombre légère */
+            text-align: center; 
+        }
+
+        .pizza-card h4 {
+            font-size: 1.2em;
+            margin-bottom: 10px;
+            min-height: 3em;
+        }
+        
+        .pizza-card p {
+            font-size: 1em;
+            margin-bottom: 8px;
+        }
+
+        .pizza-card .price {
+            margin-top: auto; 
+            font-weight: bold;
+        }
+
+        .pizza-image {
+            width: 200px; 
+            height: 200px; 
+            object-fit: cover; /* Remplit le carré en coupant l'image si nécessaire */
+            border-radius: 8px;
+        }
+    </style>
+
     <h2>Bienvenue, {{ user.first_name }} !</h2>
-    
+
     <h3>Offres Personnalisées</h3>
     <div class="recommendations">
-        {% for pizza in recommendations%}
+        {% for pizza in recommendations %}
             <div class="pizza-card">
                 <h4>{{ pizza.name }}</h4>
                 <img src="{{ MEDIA_URL }}{{ pizza.image }}" alt="{{ pizza.name }}" class="pizza-image">
-
                 <p>{{ pizza.ingredients }}</p>
-                <p><strong>Prix : </strong>{{ pizza.unit_price }} €</p>
+                <div class="price">Prix : {{ pizza.unit_price }} €</div>
             </div>
         {% endfor %}
     </div>
@@ -24,9 +77,8 @@
             <div class="pizza-card">
                 <h4>{{ pizza.name }}</h4>
                 <img src="{{ MEDIA_URL }}{{ pizza.image }}" alt="{{ pizza.name }}" class="pizza-image">
-
                 <p>{{ pizza.ingredients }}</p>
-                <p><strong>Prix : </strong>{{ pizza.unit_price }} €</p>
+                <div class="price">Prix : {{ pizza.unit_price }} €</div>
             </div>
         {% endfor %}
     </div>

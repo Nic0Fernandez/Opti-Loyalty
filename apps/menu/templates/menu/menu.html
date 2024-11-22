@@ -1,19 +1,129 @@
+<!-- templates/menu.html -->
 {% extends "main/base.html" %}
+{% load static %}
 
 {% block title %}Menu{% endblock %}
 
 {% block content %}
-    
+    <style>
+        /* Styles pour le Menu */
+
+        /* Style pour les catégories */
+        .category {
+            margin-bottom: 40px;
+        }
+
+        .category h4 {
+            text-transform: uppercase;
+            color: #333;
+            border-bottom: 2px solid #ddd;
+            padding-bottom: 10px;
+            margin-bottom: 20px;
+        }
+
+        /* Style pour la liste des pizzas */
+        .pizzas {
+            display: flex;
+            flex-direction: column; /* Liste verticale */
+            gap: 20px;
+        }
+
+        /* Style pour chaque carte de pizza */
+        .pizza-card {
+            display: flex;
+            flex-direction: column;
+            background-color: #f8f9fa;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            padding: 20px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            text-align: center;
+            max-width: 400px; /* Limiter la largeur des cartes */
+            margin: 0 auto; /* Centrer les cartes */
+        }
+
+        /* Style pour le nom de la pizza */
+        .pizza-card h4 {
+            font-size: 1.5em;
+            margin-bottom: 10px;
+            min-height: 3em; /* Hauteur fixe pour éviter le décalage */
+            overflow: hidden; /* Masquer le débordement */
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
+        }
+
+        /* Style pour les ingrédients */
+        .pizza-card p {
+            font-size: 1em;
+            margin-bottom: 15px;
+            color: #555;
+        }
+
+        /* Style pour les tailles et prix */
+        .sizes {
+            margin-top: auto; /* Pousse les tailles vers le bas */
+        }
+
+        .sizes ul {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+
+        .sizes li {
+            font-weight: bold;
+            padding: 5px 0;
+            border-top: 1px solid #ddd;
+        }
+
+        .sizes li:first-child {
+            border-top: none;
+        }
+
+        /* Style pour les images */
+        .pizza-image {
+            width: 200px;
+            height: 200px;
+            object-fit: cover;
+            border-radius: 8px;
+            margin-bottom: 15px;
+        }
+
+        /* Responsive Design */
+        @media (max-width: 600px) {
+            .pizza-card {
+                max-width: 100%;
+            }
+
+            .pizza-image {
+                width: 100%;
+                height: auto;
+            }
+        }
+    </style>
+
     <h3>Menu</h3>
 
-    <div class="pizzas">
-        {% for pizza in pizzas %}
-            <div class="pizza-card">
-                <h4>{{ pizza.name }}</h4>
-                <img src="{{ MEDIA_URL }}{{ pizza.image }}" alt="{{ pizza.name }}" class="pizza-image">
-
-                <p>{{ pizza.ingredients }}</p>
+    {% for category, pizzas in grouped_categories.items %}
+        <div class="category">
+            <h4>{{ category }}</h4>
+            <div class="pizzas">
+                {% for pizza in pizzas %}
+                    <div class="pizza-card">
+                        <h4>{{ pizza.name }}</h4>
+                        <img src="{{ MEDIA_URL }}{{ pizza.image }}" alt="{{ pizza.name }}" class="pizza-image">
+                        <p>{{ pizza.ingredients }}</p>
+                        <div class="sizes">
+                            <ul>
+                                {% for size in pizza.sizes %}
+                                    <li>{{ size.size }} - {{ size.unit_price }} €</li>
+                                {% endfor %}
+                            </ul>
+                        </div>
+                    </div>
+                {% endfor %}
             </div>
-        {% endfor %}
-    </div>
+        </div>
+    {% endfor %}
 {% endblock %}

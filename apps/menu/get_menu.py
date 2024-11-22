@@ -2,8 +2,9 @@ import sqlite3
 import pandas as pd
 
 query = """
-    SELECT DISTINCT name, ingredients, image
+    SELECT *
     FROM main_pizza
+    
 """
 
 def get_menu(db_path):
@@ -14,5 +15,5 @@ def get_menu(db_path):
     conn.close()
     
     result = df.to_dict(orient='records')
-    
+    print(result)
     return result
