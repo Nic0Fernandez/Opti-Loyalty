@@ -1,4 +1,3 @@
-<!-- templates/menu.html -->
 {% extends "main/base.html" %}
 {% load static %}
 
@@ -6,9 +5,6 @@
 
 {% block content %}
     <style>
-        /* Styles pour le Menu */
-
-        /* Style pour les catégories */
         .category {
             margin-bottom: 40px;
         }
@@ -21,48 +17,54 @@
             margin-bottom: 20px;
         }
 
-        /* Style pour la liste des pizzas */
         .pizzas {
-            display: flex;
-            flex-direction: column; /* Liste verticale */
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
             gap: 20px;
+            justify-items: center; 
         }
 
-        /* Style pour chaque carte de pizza */
         .pizza-card {
             display: flex;
             flex-direction: column;
             background-color: #f8f9fa;
             border: 1px solid #ddd;
             border-radius: 8px;
-            padding: 20px;
+            padding: 15px;
             box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-            text-align: center;
-            max-width: 400px; /* Limiter la largeur des cartes */
-            margin: 0 auto; /* Centrer les cartes */
+            text-align: left;
+            max-width: 250px; 
+            width: 100%; 
+            box-sizing: border-box;
+            height: 100%; 
+            transition: transform 0.3s, box-shadow 0.3s;
         }
 
-        /* Style pour le nom de la pizza */
+        .pizza-card:hover {
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.2);
+            transform: translateY(-5px);
+        }
+
         .pizza-card h4 {
-            font-size: 1.5em;
-            margin-bottom: 10px;
-            min-height: 3em; /* Hauteur fixe pour éviter le décalage */
-            overflow: hidden; /* Masquer le débordement */
+            font-size: 1.2em;
+            margin-bottom: 8px;
+            min-height: 2.4em; 
+            overflow: hidden; 
             display: -webkit-box;
-            -webkit-line-clamp: 2;
+            -webkit-line-clamp: 3; 
             -webkit-box-orient: vertical;
         }
 
-        /* Style pour les ingrédients */
+       
         .pizza-card p {
-            font-size: 1em;
-            margin-bottom: 15px;
+            font-size: 0.9em;
+            margin-bottom: 12px;
             color: #555;
+            flex-grow: 1; 
         }
 
-        /* Style pour les tailles et prix */
         .sizes {
-            margin-top: auto; /* Pousse les tailles vers le bas */
+            margin-top: auto; 
         }
 
         .sizes ul {
@@ -73,7 +75,7 @@
 
         .sizes li {
             font-weight: bold;
-            padding: 5px 0;
+            padding: 4px 0;
             border-top: 1px solid #ddd;
         }
 
@@ -81,24 +83,32 @@
             border-top: none;
         }
 
-        /* Style pour les images */
         .pizza-image {
-            width: 200px;
-            height: 200px;
+            width: 100%;
+            height: 150px; 
             object-fit: cover;
             border-radius: 8px;
-            margin-bottom: 15px;
+            margin-bottom: 12px;
         }
 
-        /* Responsive Design */
-        @media (max-width: 600px) {
+        
+        @media (max-width: 850px) {
             .pizza-card {
-                max-width: 100%;
+                max-width: 200px; 
             }
 
             .pizza-image {
-                width: 100%;
-                height: auto;
+                height: 120px;
+            }
+        }
+
+        @media (max-width: 600px) {
+            .pizza-card {
+                max-width: 100%; 
+            }
+
+            .pizza-image {
+                height: 150px;
             }
         }
     </style>
@@ -112,7 +122,11 @@
                 {% for pizza in pizzas %}
                     <div class="pizza-card">
                         <h4>{{ pizza.name }}</h4>
-                        <img src="{{ MEDIA_URL }}{{ pizza.image }}" alt="{{ pizza.name }}" class="pizza-image">
+                        {% if pizza.image %}
+                            <img src="{{ MEDIA_URL }}{{ pizza.image }}" alt="{{ pizza.name }}" class="pizza-image">
+                        {% else %}
+                            <img src="{% static 'images/default_pizza.jpg' %}" alt="{{ pizza.name }}" class="pizza-image">
+                        {% endif %}
                         <p>{{ pizza.ingredients }}</p>
                         <div class="sizes">
                             <ul>

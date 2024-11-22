@@ -15,5 +15,4 @@ def get_menu(db_path):
     conn.close()
     
     result = df.to_dict(orient='records')
-    print(result)
     return result

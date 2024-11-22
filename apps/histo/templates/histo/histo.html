@@ -1,34 +1,160 @@
+<!-- templates/historique.html -->
 {% extends "main/base.html" %}
+{% load static %}
 
-{% block title %}Historique{% endblock %}
+{% block title %}Historique des Commandes{% endblock %}
 
 {% block content %}
-    
-    <h3>Vos commandes passées</h3>
+    <style>
+        /* Styles pour l'Historique des Commandes */
 
-    <table class="order-table">
-        <thead>
-            <tr>
-                <th>Nom de la pizza</th>
-                <th>Ingrédients</th>
-                <th>Taille</th>
-                <th>Prix</th>
-                <th>Date</th>
-                <th>Heure</th>
-            </tr>
-        </thead>
-        <tbody>
-            {% for order in orders %}
-                <tr>
-                    <td>{{ order.name }}</td>
-                    <td>{{ order.ingredients}}</td>
-                    <td>{{ order.size }}</td>
-                    <td>{{ order.unit_price }}</td>
-                    <td>{{ order.formatted_date }}</td>
-                    <td>{{ order.formatted_time }}</td>
-                </tr>
-            {% endfor %}
-        </tbody>
-    </table>
+        body {
+            background-color: #f4f4f4;
+            font-family: 'Arial', sans-serif;
+        }
 
+        h3 {
+            text-align: center;
+            margin-top: 40px;
+            margin-bottom: 20px;
+            color: #333;
+        }
+
+        .orders-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+            padding: 20px;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .order-ticket {
+            background-color: #fff;
+            border: 2px dashed #333;
+            border-radius: 10px;
+            padding: 20px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            position: relative;
+            font-size: 14px;
+            width: 100%;
+            box-sizing: border-box;
+            transition: transform 0.3s, box-shadow 0.3s;
+        }
+
+        .order-ticket:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.2);
+        }
+
+        .ticket-header {
+            text-align: center;
+            margin-bottom: 15px;
+        }
+
+        .ticket-header h4 {
+            margin: 0;
+            font-size: 1.2em;
+            font-weight: bold;
+            border-bottom: 1px solid #ddd;
+            padding-bottom: 5px;
+        }
+
+        .order-details {
+            margin-bottom: 10px;
+        }
+
+        /* Suppression de la classe date-time */
+        /* .order-details .date-time {
+            font-size: 0.9em;
+            color: #555;
+            margin-bottom: 10px;
+        } */
+
+        .order-details .pizza-name {
+            font-size: 1em;
+            font-weight: bold;
+            margin-bottom: 5px;
+            color: #333;
+        }
+
+        .order-details .ingredients {
+            font-size: 0.85em;
+            color: #777;
+            margin-bottom: 10px;
+        }
+
+        .order-details .size-price {
+            display: flex;
+            justify-content: space-between;
+            font-weight: bold;
+            color: #333;
+        }
+
+        /* Style pour les bordures en haut et en bas du ticket */
+        .order-ticket::before,
+        .order-ticket::after {
+            content: "";
+            position: absolute;
+            left: 10px;
+            right: 10px;
+            height: 2px;
+            background: #333;
+        }
+
+        .order-ticket::before {
+            top: 0;
+        }
+
+        .order-ticket::after {
+            bottom: 0;
+        }
+
+        /* Responsive Design */
+        @media (max-width: 600px) {
+            .order-ticket {
+                padding: 15px;
+            }
+
+            .ticket-header h4 {
+                font-size: 1em;
+            }
+
+            .order-details .pizza-name {
+                font-size: 0.95em;
+            }
+
+            .order-details .ingredients {
+                font-size: 0.8em;
+            }
+
+            .order-details .size-price {
+                font-size: 0.9em;
+            }
+        }
+    </style>
+
+    <h3>Vos Commandes Passées</h3>
+
+    <div class="orders-container">
+        {% for order in orders %}
+            <div class="order-ticket">
+                <div class="ticket-header">
+                    <h4>{{ order.formatted_date }}</h4> <!-- Affiche la date de la commande -->
+                </div>
+                <div class="order-details">
+                    <!-- Suppression de l'heure -->
+                    <!-- <div class="date-time">{{ order.formatted_date }} à {{ order.formatted_time }}</div> -->
+                    <div class="pizza-name">{{ order.name }}</div>
+                    <div class="ingredients">{{ order.ingredients }}</div>
+                    <div class="size-price">
+                        <span>Taille : {{ order.size }}</span>
+                        <span>Prix : {{ order.unit_price }} €</span>
+                    </div>
+                </div>
+            </div>
+        {% empty %}
+            <p style="text-align: center;">Aucune commande passée trouvée.</p>
+        {% endfor %}
+    </div>
 {% endblock %}

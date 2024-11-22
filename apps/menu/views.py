@@ -43,3 +43,9 @@ def menu(request):
     }
 
     return render(request, 'menu/menu.html', context)
+
+
+from django.shortcuts import render
+
+def test_turn(request):
+    return render(request, 'menu/test_turn.html')

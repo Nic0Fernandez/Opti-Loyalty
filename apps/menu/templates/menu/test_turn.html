@@ -1,0 +1,88 @@
+<!-- templates/menu/test_flipbook.html -->
+{% extends "main/base.html" %}
+{% load static %}
+
+{% block title %}Test Flipbook{% endblock %}
+
+{% block extra_css %}
+<style>
+    /* Styles pour le flipbook de test */
+    #flipbook-test {
+        width: 400px;
+        height: 300px;
+        margin: 50px auto;
+        border: 2px solid #333;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+        background-color: #f0f0f0;
+    }
+
+    .flipbook-page-test {
+        width: 400px;
+        height: 300px;
+        background-color: white;
+        box-sizing: border-box;
+        border: 1px solid #ddd;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        font-size: 1.5em;
+        font-weight: bold;
+        color: #333;
+    }
+
+    .hard-test {
+        background-color: #f7f7f7;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+    <h3>Test Flipbook avec Turn.js</h3>
+
+    <!-- Conteneur du flipbook -->
+    <div id="flipbook-test">
+        <div class="flipbook-page-test hard-test">
+            Couverture
+        </div>
+        <div class="flipbook-page-test hard-test">
+            <!-- Page vierge -->
+        </div>
+        <div class="flipbook-page-test">
+            Page 1
+        </div>
+        <div class="flipbook-page-test">
+            Page 2
+        </div>
+        <div class="flipbook-page-test">
+            Page 3
+        </div>
+        <div class="flipbook-page-test">
+            Page 4
+        </div>
+        <div class="flipbook-page-test hard-test">
+            <!-- Page vierge -->
+        </div>
+        <div class="flipbook-page-test hard-test">
+            <!-- Page vierge -->
+        </div>
+    </div>
+
+    <!-- Inclure jQuery et Turn.js depuis un CDN fiable -->
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/turn.js/4.1.0/turn.min.js"></script>
+    <script>
+        $(document).ready(function(){
+            console.log("Initialisation de Turn.js pour le test");
+
+            $('#flipbook-test').turn({
+                width: 400,
+                height: 300,
+                autoCenter: true,
+                display: 'double', // Afficher deux pages à la fois
+                duration: 1000, // Durée de l'animation de tournage en millisecondes
+            });
+
+            console.log("Turn.js pour le test initialisé");
+        });
+    </script>
+{% endblock %}

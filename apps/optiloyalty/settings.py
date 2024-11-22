@@ -130,6 +130,10 @@ USE_L10N = True
 
 STATIC_URL = 'static/'
 
+STATICFILES_DIRS = [
+    BASE_DIR / 'static',
+]
+
 # Rediriger les utilisateurs vers 'accueil' après la connexion
 LOGIN_REDIRECT_URL = 'home'
 
