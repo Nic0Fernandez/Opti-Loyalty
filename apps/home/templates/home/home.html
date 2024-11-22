@@ -5,7 +5,7 @@
 
 {% block content %}
     <style>
-        .pizzas, .recommendations {
+        .pizzas, .recommendations, .seasonnal {
             display: flex;
             overflow-x: auto; 
             gap: 20px; 
@@ -133,6 +133,10 @@
         <h3>Top ventes</h3>
         <div class="pizzas">
         </div>
+
+        <h3>Pizzas de saison</h3>
+        <div class="seasonnal">
+        </div>
     </div>
 
     <script>
@@ -186,6 +190,12 @@
             data.best_sold_pizzas.forEach(pizza => {
                 const pizzaCard = createPizzaCard(pizza);
                 pizzasContainer.appendChild(pizzaCard);
+            });
+
+            const seasonnalContainer = document.querySelector('.seasonnal');
+            data.pizzas_season.forEach(pizza => {
+                const pizzaCard = createPizzaCard(pizza);
+                seasonnalContainer.appendChild(pizzaCard);
             });
         }
 

@@ -10,7 +10,7 @@ import sqlite3
 import sys
 import os
 
-from home.top_pizzas import best_sold,get_info_pizza
+from home.top_pizzas import best_sold,get_info_pizza,pizzas_season
 
 from models.scripts.gradient_boosting import get_boosting_recommendations
 from models.scripts.random_forest import get_forest_recommendations
@@ -44,6 +44,7 @@ def get_home_data(request):
 
     best_sold_pizzas = best_sold(db_path)
     recommendations_info = get_info_pizza(db_path, recommendations)
+    seasonnal = pizzas_season(db_path)
     print(best_sold_pizzas)
     print(recommendations_info)
 
@@ -58,6 +59,7 @@ def get_home_data(request):
     data = {
         'best_sold_pizzas': [serialize_pizza(pizza) for pizza in best_sold_pizzas],
         'recommendations': [serialize_pizza(pizza) for pizza in recommendations_info],
+        "pizzas_season": [serialize_pizza(pizza) for pizza in seasonnal]
     }
 
     return JsonResponse(data)
