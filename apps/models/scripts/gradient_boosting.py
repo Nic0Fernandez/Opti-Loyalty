@@ -64,5 +64,4 @@ def get_boosting_recommendations(client_id, db_path):
     # Extraire uniquement les noms de pizzas
     recommendations = [pizza for pizza, prob in top_recommendations]
 
-    print(recommendations)
     return recommendations

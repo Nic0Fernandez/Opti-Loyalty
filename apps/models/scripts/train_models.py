@@ -26,7 +26,6 @@ def run_script(script_name):
         print(f"Script {script_name} introuvable dans {scripts_dir}.\n")
 
 
-print("TRAIN MODELLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLS")
 
 if __name__ == "__main__":
     for script in scripts_to_run:

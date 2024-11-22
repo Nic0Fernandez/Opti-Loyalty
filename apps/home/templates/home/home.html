@@ -55,31 +55,150 @@
             object-fit: cover; 
             border-radius: 8px;
         }
+
+        #loading-screen {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100vh; 
+            background-color: #fff;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex-direction: column;
+            z-index: 9999;
+        }
+
+        .loader {
+            border: 8px solid #f3f3f3;
+            border-top: 8px solid #3498db;
+            border-radius: 50%;
+            width: 60px;
+            height: 60px;
+            animation: spin 1s linear infinite;
+            margin-bottom: 20px; 
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .message {
+            text-align: center;
+            color: #555;
+            font-size: 18px;
+            margin-bottom: 10px; 
+        }
+
+        .progress-bar-container {
+            width: 80%;
+            background-color: #f3f3f3;
+            border-radius: 25px;
+            overflow: hidden;
+            margin-top: 10px;
+        }
+
+        .progress-bar {
+            width: 0%;
+            height: 20px;
+            background-color: #3498db;
+            transition: width 0.5s ease;
+        }
+
+        .status-message {
+            margin-top: 10px;
+            font-size: 16px;
+            color: #555;
+        }
     </style>
 
-    <h2>Bienvenue, {{ user.first_name }} !</h2>
-
-    <h3>Offres Personnalisées</h3>
-    <div class="recommendations">
-        {% for pizza in recommendations %}
-            <div class="pizza-card">
-                <h4>{{ pizza.name }}</h4>
-                <img src="{{ MEDIA_URL }}{{ pizza.image }}" alt="{{ pizza.name }}" class="pizza-image">
-                <p>{{ pizza.ingredients }}</p>
-                <div class="price">Prix : {{ pizza.unit_price }} €</div>
-            </div>
-        {% endfor %}
+    <div id="loading-screen">
+        <div class="loader"></div>
+        <p class="message">Préparation de vos recommandations personnalisées...</p>
+        <div class="progress-bar-container">
+            <div class="progress-bar" id="progress-bar"></div>
+        </div>
+        <p class="status-message" id="status-message">Chargement en cours...</p>
     </div>
 
-    <h3>Top ventes</h3>
-    <div class="pizzas">
-        {% for pizza in best_sold_pizzas %}
-            <div class="pizza-card">
-                <h4>{{ pizza.name }}</h4>
-                <img src="{{ MEDIA_URL }}{{ pizza.image }}" alt="{{ pizza.name }}" class="pizza-image">
-                <p>{{ pizza.ingredients }}</p>
-                <div class="price">Prix : {{ pizza.unit_price }} €</div>
-            </div>
-        {% endfor %}
+    <div id="main-content" style="display: none;">
+        <h2>Bienvenue, {{ user.first_name }} !</h2>
+
+        <h3>Offres Personnalisées</h3>
+        <div class="recommendations">
+        </div>
+
+        <h3>Top ventes</h3>
+        <div class="pizzas">
+        </div>
     </div>
+
+    <script>
+        document.addEventListener("DOMContentLoaded", function() {
+            let progressBar = document.getElementById('progress-bar');
+            let statusMessage = document.getElementById('status-message');
+            let progress = 0;
+            let progressInterval = setInterval(() => {
+                if (progress < 90) { 
+                    progress += 1;
+                    progressBar.style.width = progress + '%';
+                } else {
+                    clearInterval(progressInterval);
+                }
+            }, 100); 
+
+            fetch("{% url 'get_home_data' %}")
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error('Erreur réseau');
+                    }
+                    return response.json();
+                })
+                .then(data => {
+                    updatePageWithData(data);
+
+                    progressBar.style.width = '100%';
+                    statusMessage.innerText = 'Chargement terminé !';
+
+                    setTimeout(() => {
+                        document.getElementById('loading-screen').style.display = 'none';
+                        document.getElementById('main-content').style.display = 'block';
+                    }, 500); 
+                })
+                .catch(error => {
+                    console.error('Erreur lors de la récupération des données :', error);
+                    document.querySelector('.message').innerText = 'Une erreur est survenue lors du chargement des données.';
+                    progressBar.style.backgroundColor = '#e74c3c'; 
+                    statusMessage.innerText = 'Échec du chargement.';
+                });
+        });
+
+        function updatePageWithData(data) {
+            const recommendationsContainer = document.querySelector('.recommendations');
+            data.recommendations.forEach(pizza => {
+                const pizzaCard = createPizzaCard(pizza);
+                recommendationsContainer.appendChild(pizzaCard);
+            });
+
+            const pizzasContainer = document.querySelector('.pizzas');
+            data.best_sold_pizzas.forEach(pizza => {
+                const pizzaCard = createPizzaCard(pizza);
+                pizzasContainer.appendChild(pizzaCard);
+            });
+        }
+
+        function createPizzaCard(pizza) {
+            const card = document.createElement('div');
+            card.classList.add('pizza-card');
+            card.innerHTML = `
+                <h4>${pizza.name}</h4>
+                <img src="${pizza.image_url}" alt="${pizza.name}" class="pizza-image">
+                <p>${pizza.ingredients}</p>
+                <div class="price">Prix : ${pizza.unit_price} €</div>
+            `;
+            return card;
+        }
+    </script>
 {% endblock %}
