@@ -47,6 +47,8 @@ Puis
     python .\manage.py runserver
     ```
 
+Vous pouvez utiliser le mail tncy@gmail.com et tncy1234 comme mot de passe pour éviter de créer un compte.
+
 Tous les scripts (et notebooks équivalents) utilisés pour entraîner les modèles et réaliser les tests ainsi que la génération des données clients sont disponibles dans les dossier "scripts" et "scripts/notebooks" depuis la racine du projet.
 
 Le dossier "media" contient les images utilisées. Le dossier apps contient toute la partie front-end et liaison avec le back-end. Chaque app correspond à une page. L'app "models" contient les scripts d'entrainement des modèles utilisés par le site.
