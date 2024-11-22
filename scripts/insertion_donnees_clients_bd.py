@@ -8,7 +8,7 @@ def load_pizza_data():
 
     required_columns = ['client_id','pizza_id','order_date']
     if not all(col in df.columns for col in required_columns):
-        raise ValueError(f"Le fichier Excel doit contenir les colonnes suivantes : {', '.join(required_columns)}")
+        raise ValueError(f"Le fichier csv doit contenir les colonnes suivantes : {', '.join(required_columns)}")
     
     return df
 

@@ -9,7 +9,7 @@ import sqlite3
 import sys
 import os
 
-from home.top_pizzas import best_sold,get_info_pizza
+from home.top_pizzas import best_sold,get_info_pizza,pizzas_season
 
 from models.scripts.gradient_boosting import get_boosting_recommendations
 from models.scripts.random_forest import get_forest_recommendations
@@ -37,6 +37,7 @@ def home(request):
         'best_sold_pizzas': best_sold(db_path),
         'MEDIA_URL': settings.MEDIA_URL,
         "recommendations": get_info_pizza(db_path,recommendations),
+        "pizzas_season": pizzas_season(db_path)
     }
     return render(request, 'home/home.html', context)
 
