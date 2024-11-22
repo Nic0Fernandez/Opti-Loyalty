@@ -47,7 +47,6 @@ def get_home_data(request):
     print(best_sold_pizzas)
     print(recommendations_info)
 
-    # Sérialiser les données pour JSON
     def serialize_pizza(pizza):
         return {
             'name': pizza['name'],

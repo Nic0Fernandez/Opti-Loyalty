@@ -134,13 +134,10 @@ STATICFILES_DIRS = [
     BASE_DIR / 'static',
 ]
 
-# Rediriger les utilisateurs vers 'accueil' après la connexion
 LOGIN_REDIRECT_URL = 'home'
 
-# Rediriger les utilisateurs vers 'login' si non authentifiés
 LOGIN_URL = 'login'
 
-# Optionnel : Définir la redirection par défaut après la déconnexion
 LOGOUT_REDIRECT_URL = 'login'
 
 MEDIA_URL = 'media/'  # L'URL de base pour accéder aux fichiers média dans l'application

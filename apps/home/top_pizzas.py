@@ -1,7 +1,7 @@
 import sqlite3
 import pandas as pd
 
-# Requête SQL pour récupérer les 5 pizzas les plus populaires du mois dernier
+# Requête SQL pour récupérer les 5 pizzas les plus populaires du mois dernier (ie 30 derniers jours)
 query_best_sold = """
     SELECT name, unit_price, ingredients, image,strftime('%Y-%m', order_date) AS order_month, COUNT(*) AS order_count
     FROM main_order o

@@ -1,4 +1,3 @@
-<!-- templates/historique.html -->
 {% extends "main/base.html" %}
 {% load static %}
 
@@ -6,7 +5,6 @@
 
 {% block content %}
     <style>
-        /* Styles pour l'Historique des Commandes */
 
         body {
             background-color: #f4f4f4;
@@ -64,13 +62,6 @@
             margin-bottom: 10px;
         }
 
-        /* Suppression de la classe date-time */
-        /* .order-details .date-time {
-            font-size: 0.9em;
-            color: #555;
-            margin-bottom: 10px;
-        } */
-
         .order-details .pizza-name {
             font-size: 1em;
             font-weight: bold;
@@ -91,7 +82,6 @@
             color: #333;
         }
 
-        /* Style pour les bordures en haut et en bas du ticket */
         .order-ticket::before,
         .order-ticket::after {
             content: "";
@@ -140,11 +130,9 @@
         {% for order in orders %}
             <div class="order-ticket">
                 <div class="ticket-header">
-                    <h4>{{ order.formatted_date }}</h4> <!-- Affiche la date de la commande -->
+                    <h4>{{ order.formatted_date }}</h4>
                 </div>
                 <div class="order-details">
-                    <!-- Suppression de l'heure -->
-                    <!-- <div class="date-time">{{ order.formatted_date }} à {{ order.formatted_time }}</div> -->
                     <div class="pizza-name">{{ order.name }}</div>
                     <div class="ingredients">{{ order.ingredients }}</div>
                     <div class="size-price">

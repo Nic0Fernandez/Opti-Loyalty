@@ -3,13 +3,11 @@ import pandas as pd
 import numpy as np
 import os
 
-# Chemin absolu vers la base de données
 def get_database_connection():
     current_dir = os.path.dirname(os.path.abspath(__file__))
     db_path = os.path.join(current_dir, '../../../db.sqlite3')
     return sqlite3.connect(db_path)
 
-# Charger les données nécessaires
 def load_data():
     conn = get_database_connection()
 
@@ -30,7 +28,6 @@ def load_data():
 
     return pizzas_df, orders_df
 
-# Fonctions utilitaires
 def get_pizza_ingredients(pizza_id, pizzas_df):
     """Retourne les ingrédients d'une pizza donnée par son pizza_id."""
     return pizzas_df[pizzas_df['pizza_id'] == pizza_id]['ingredients'].iloc[0].split(', ')
@@ -74,7 +71,6 @@ def precision_recall_at_k(recommended_pizzas, relevant_pizzas, k=1):
     recall = len(hits) / len(relevant_set) if len(relevant_set) > 0 else 0
     return precision, recall
 
-# Fonction d'évaluation
 def evaluate_model():
     pizzas_df, orders_df = load_data()
     clients = orders_df['client_id'].unique()

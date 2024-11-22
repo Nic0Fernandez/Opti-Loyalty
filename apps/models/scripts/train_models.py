@@ -4,7 +4,7 @@ import os
 current_dir = os.path.dirname(os.path.abspath(__file__))
 scripts_dir = os.path.join(current_dir)
 
-# Liste des scripts à exécuter
+# Liste scripts à exécuter
 scripts_to_run = [
     "collaborative_model.py",
     "gradient_boosting.py",

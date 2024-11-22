@@ -8,7 +8,6 @@ import joblib
 
 import os
 
-# Chemin absolu vers la base de données
 current_dir = os.path.dirname(os.path.abspath(__file__))  
 db_path = os.path.join(current_dir, '../../../db.sqlite3') 
 conn = sqlite3.connect(db_path)
@@ -26,14 +25,10 @@ ON
     main_order.pizza_id = main_pizza.pizza_id
 """
 data = pd.read_sql_query(query, conn)
-
-# Fermer la connexion
 conn.close()
 
-# Récupérer tous les clients
 client_ids = data['client_id'].unique()
 
-# Split des clients en 80% train, 20% test
 train_clients, test_clients = train_test_split(client_ids, test_size=0.2, random_state=42)
 
 # Dataset d'entraînement
@@ -50,13 +45,10 @@ reader = Reader(rating_scale=(train_pizza_counts['rating'].min(), train_pizza_co
 trainset = Dataset.load_from_df(train_pizza_counts[['client_id', 'pizza_name', 'rating']], reader).build_full_trainset()
 testset = Dataset.load_from_df(test_pizza_counts[['client_id', 'pizza_name', 'rating']], reader).build_full_trainset()
 
-# Entraîner un modèle SVD sur l'ensemble d'entraînement
+# Entraîner le modèle avec data train
 algo = SVD(n_factors=50, reg_all=0.1)
 algo.fit(trainset)
 
 
-# Chemin pour sauvegarder le modèle
 collaborative_model_path = 'models/collaborative_model.joblib'
-
-# Sauvegarder le modèle
 joblib.dump(algo, collaborative_model_path)
